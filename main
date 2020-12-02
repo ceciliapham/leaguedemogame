@@ -1,0 +1,277 @@
+#include <iostream>
+#include <string>
+#include <cstdlib> //srand
+using namespace std;
+
+void menu();
+char menuChoice(char&);
+void programGreeting();
+ // Specification C2 - Creature class
+class Creature 
+{
+  public:
+  int hunger;
+  int boredom;
+  int hungerstate;
+  int boredomstate;
+  // 0 = dead 1 = alive//
+  string name;
+  const int MIN_RAND= 0;
+  const int MAX_RAND= 5;
+  Creature(){hunger = rand () % (MAX_RAND - MIN_RAND + 1) + MIN_RAND;
+    boredom = rand () % (MAX_RAND - MIN_RAND + 1) + MIN_RAND;
+  }// constructor 
+
+  // Specification B2 - Virtual Class Creature
+  virtual void play() = 0;
+  virtual void feed() = 0;
+  virtual string getName() = 0;
+  virtual void passTime() = 0;
+  virtual void listen() = 0;
+  virtual ~Creature(){} 
+};
+void chooseCreature(Creature** newCreatureptr);
+// Specification B1 - Child Class
+class Adc : public Creature
+{
+  public:
+  Adc () // constructor for random boredom / hugner
+  {
+    hunger = rand () % (MAX_RAND - MIN_RAND + 1) + MIN_RAND;
+    boredom = rand () % (MAX_RAND - MIN_RAND + 1) + MIN_RAND;
+    //cout << "adc hunger is: "<< hunger<< "\nadc boredom is: "<< boredom << endl;
+  };
+  void play()//working decrease boredom
+  {
+    int decreaseby;
+    decreaseby = rand() % (5) + 4;
+    boredom = boredom - decreaseby;
+    if (boredom < 0)
+    {
+        boredom = 0;
+    }
+    cout << "You have practiced kiling minions with "<< name << endl << name << "'s current boredom decreased by " << decreaseby<< endl<< name<<"'s boredom level is now: " <<boredom<< endl<< "Please press enter to continue\n";
+    cin.ignore();
+    // Specification C1 - PassTime()
+    passTime();
+  };
+  void feed() // working increase hunger
+  {
+    int increaseby;
+    increaseby = rand() % (4) + 3;
+    hunger = hunger + increaseby;
+    cout <<"You have fed "<< name<< endl<< name <<"'s current hunger level is: " << hunger << endl<<"Please press enter to continue\n";
+    cin.ignore();
+    passTime();
+  };
+  string getName()
+  {
+    cout << "Please enter in a name for your character and press enter\n";
+    cin >> name;
+    return name;
+  }
+  void passTime()//increas h&b by 1 afterlistplayfeed
+  {
+    hunger = hunger - 1;
+    boredom = boredom + 1;
+    if (hunger == 0)
+    {
+      cout << "WARNING: "<< name<< " 's hunger has reached 0, feed "<< name<< " before it dies!\n";
+    }
+    if (hunger < 0)
+    {
+      cout << " Oh no!\n" << name << " has died of starvation!\n";
+      cout<<"Thank you for playing!";
+      hungerstate = 0;//they ded
+      exit (EXIT_FAILURE);
+    }
+    if (boredom > 20)
+    {
+      boredomstate = 0;
+      cout <<name << "'s boredom has exceeded 20!\n"<< name<< "will now be unresponsive\n.Thank you for playing\n";
+      exit (EXIT_FAILURE);
+    }
+  }
+  void listen()
+  {
+    cout <<name<<"'s current hunger is: "<< hunger<< endl<< name<<"'sncurrent boredom is: "<< boredom<< endl;
+    passTime();
+  }
+  // Specification C4 - Overload «
+  void operator<<(const Creature &v)
+  {
+    cout<< name<<"'s stats are\n" <<"hunger level: "<< hunger<< "\nboredom level: "<< boredom;
+
+  };
+  //Specification B4 - Overload + Operator
+ void operator+(const Creature &v)
+  {
+   // cout<< name<<"'s stats are\n" <<"hunger level: "<< hunger<< "\nboredom level: "<< boredom;
+
+  }
+  //Specification B3 - Overload Assignment Operator
+   void operator-(const Creature &v)
+  {
+   // cout<< name<<"'s stats are\n" <<"hunger level: "<< hunger<< "\nboredom level: "<< boredom;
+
+  }
+};//adc
+// Specification A3 - Second Child Class
+class Supp : public Creature
+{
+  public:
+  Supp () // constructor for random boredom / hugner
+  {
+    hunger = rand () % (MAX_RAND - MIN_RAND + 1) + MIN_RAND;
+    boredom = rand () % (MAX_RAND - MIN_RAND + 1) + MIN_RAND;
+    cout << "Supp hunger is: "<< hunger<< "\nSupp boredom is: "<< boredom << endl;
+  };
+  void play()//working decrease boredom
+  {
+    int decreaseby;
+    decreaseby = rand() % (5) + 4;
+    boredom = boredom - decreaseby;
+    if (boredom < 0)
+    {
+        boredom = 0;
+    }
+    cout << "You have practiced crowd control with "<< name << endl << name << "'s current boredom decreased by " << decreaseby<< endl<< name<<"'s boredom level is now: " <<boredom<< endl<<"Please press enter to continue\n";
+    cin.ignore();
+    passTime();
+  };
+  void feed() // working increase hunger
+  {
+    int increaseby;
+    increaseby = rand() % (4) + 3;
+    hunger = hunger + increaseby;
+    cout <<"You have fed "<< name<< endl<< name <<"'s current hunger level is: " << hunger << endl<<"Please press enter to continue\n";
+    cin.ignore();
+    passTime();
+  };
+  string getName()
+  {
+    cout << "Please enter in a name for your monster and press enter\n";
+    cin >> name;
+    return name;
+  }
+  void passTime()//increas h&b by 1 afterlistplayfeed
+  {
+    hunger = hunger - 1;
+    boredom = boredom + 1;
+    if (hunger == 0)
+    {
+      cout << "WARNING: "<< name<< " 's hunger has reached 0, feed "<< name<< " before it dies!\n";
+    }
+    if (hunger < 0)
+    {
+      cout << " Oh no!\n" << name << " has died of starvation!\n";
+      cout<<"Thank you for playing!";
+      hungerstate = 0;//they ded
+      exit (EXIT_FAILURE);
+    }
+    if (boredom > 20)
+    {
+      boredomstate = 0;
+      cout <<name << "'s boredom has exceeded 20!\n"<< name<< "will now be unresponsive.\nThank you for playing\n";
+      exit (EXIT_FAILURE);
+    }
+  }
+  void listen()
+  {
+    cout <<name<<"'s current hunger is: "<< hunger<< endl<< name<<"'sncurrent boredom is: "<< boredom<< endl;
+    passTime();
+  }
+  void operator<<(const Creature &v)
+  {
+    cout<< name<<"'s stats are\n" <<"hunger level: "<< hunger<< "\nboredom level: "<< boredom;
+
+  };
+   void operator+(const Creature &v)
+  {
+   // cout<< name<<"'s stats are\n" <<"hunger level: "<< hunger<< "\nboredom level: "<< boredom;
+
+  };
+};//supp class
+int main() {
+  Creature* newCreature;
+  programGreeting();
+  int seed = 2;
+  int type;
+  srand(seed);
+  char choice;
+  chooseCreature(&newCreature);
+  
+  do{  
+    menu();
+    menuChoice (choice);
+    if (choice== 'a' or choice =='A')//listen
+    { 
+      (newCreature)->listen();
+    }
+    else if (choice == 'b' or choice == 'B')//play
+    {
+      (newCreature)->play();
+    }
+    else if (choice == 'c' or choice == 'C') //feed
+    {
+      (newCreature)->feed();
+    }
+    else if (choice == 'd' or choice == 'D') //quit
+    { 
+      cout << "You have chosen to exit the program, thank you" << endl;
+
+      exit (EXIT_FAILURE);
+    }
+  }//do
+  
+  while (choice== 'a' or choice == 'A' or choice== 'b' or choice== 'B' or choice == 'c' or choice == 'C' or choice == 'd' or choice == 'D');
+  
+ return 0;
+}//main end
+
+
+void menu() 
+{
+  cout <<"Please choose an option"<< endl << "Menu" << endl << " A. Listen \n B. Play \n C. Feed \n D. Quit " << endl ;}
+
+char menuChoice(char &choice)
+{
+  cin >> choice;
+  // Specification C3 - Validate Input
+  while ( choice!= 'a' && choice!= 'A' && choice!= 'b' && choice!= 'B' && choice != 'c' && choice != 'C' && choice != 'd' && choice != 'D')
+  {
+    cout << "Invalid Input"<< endl<< "Please try again and choose an option from the menu" << endl;
+    cin >> choice;
+  }
+   cout << "You chose option " << choice << endl;
+
+  return choice;
+}
+void programGreeting()
+{
+  cout <<"Welcome to Hokeemon\nCreated by Cecilia Pham\nThis game lets you create monsters and interact with them\nDo as you please with the monsters and make sure you dont accidentally kill them!\nIf your monster's boredom surpasses 20, you will cause irreversible damage to your monster\nIf you let your monster's hunger go below 0, your monster will starve and die!\nTo view your monster's stat's choose option A\nAre you ready?\nPress enter to start\n";
+  cin.ignore();
+};
+void chooseCreature(Creature** newCreatureptr)
+{
+  int type;
+  cout << "Please choose 1 or 2 and press enter for which type of character you would like to play with.\n"<< "1. ADC\n2. SUPPORT\n";
+  cin >> type;
+  while ( type!= 1 && type!= 2)
+  {
+    cout << "Invalid Input"<< endl<< "Please try again and choose an option from the menu" << endl;
+    cin >> type;
+  }
+  if (type==1)
+  {
+    *newCreatureptr = new Adc();
+    (*newCreatureptr)->getName();
+  }
+  else if (type==2)
+  {
+    *newCreatureptr = new Supp();
+    (*newCreatureptr)->getName();
+
+  }
+  cin.clear();
+};
